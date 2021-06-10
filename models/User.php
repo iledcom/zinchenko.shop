@@ -1,7 +1,6 @@
 <?php
 
-class User
-{
+class User {
     public static function register($name, $email, $password, $role = "") {
         
         $db = Db::getConnection();
@@ -18,6 +17,57 @@ class User
         
         return $result->execute();
     }
+
+     /**
+     * Проверяем существует ли пользователь с заданными $email и $password
+     * @param string $email
+     * @param string $password
+     * @return mixed : ingeger user id or false
+     */
+    public static function checkUserData($email, $password) {
+        $db = Db::getConnection();
+
+        $sql = 'SELECT * FROM user WHERE email = :email AND password = :password';
+
+        $result = $db->prepare($sql);
+        $result->bindParam(':email', $email, PDO::PARAM_INT);
+        $result->bindParam(':password', $password, PDO::PARAM_INT);
+        $result->execute();
+
+        $user = $result->fetch();
+        if ($user) {
+            return $user['id'];
+        }
+
+        return false;
+    }
+
+    /**
+     * Запоминаем пользователя
+     * @param string $email
+     * @param string $password
+     */
+    public static function auth($userId) {
+        $_SESSION['user'] = $userId;
+    }
+
+
+    public static function checkLogged() {
+        // Если сессия есть, вернем идентификатор пользователя
+        if (isset($_SESSION['user'])) {
+            return $_SESSION['user'];
+        }
+
+        header("Location: /user/login");
+    }
+
+
+    public static function isGuest() {
+        if (isset($_SESSION['user'])) {
+            return false;
+        }
+        return true;
+    }
     
     /**
      * Проверяет имя: не меньше, чем 2 символа
@@ -30,7 +80,7 @@ class User
     }
     
     /**
-     * Проверяет имя: не меньше, чем 6 символов
+     * Проверяет пароль: не меньше, чем 6 символов
      */
     public static function checkPassword($password) {
         if (strlen($password) >= 6) {
@@ -63,6 +113,27 @@ class User
             return true;
         }
         return false;
+    }
+
+    /**
+     * Returns user by id
+     * @param integer $id
+     */
+    public static function getUserById($id) {
+        if ($id) {
+            $db = Db::getConnection();
+            $sql = 'SELECT * FROM user WHERE id = :id';
+
+            $result = $db->prepare($sql);
+            $result->bindParam(':id', $id, PDO::PARAM_INT);
+
+            // Указываем, что хотим получить данные в виде массива
+            $result->setFetchMode(PDO::FETCH_ASSOC);
+            $result->execute();
+
+
+            return $result->fetch();
+        }
     }
     
 }
