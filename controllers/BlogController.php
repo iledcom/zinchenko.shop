@@ -2,11 +2,9 @@
 
 include_once ROOT . '/models/Blog.php';
 
-class BlogController
-{
+class BlogController {
 
-    public function actionIndex()
-    {
+    public function actionIndex() {
         $blogList = array();
         $blogList = Blog::getBlogList();
 
@@ -15,8 +13,7 @@ class BlogController
         return true;
     }
 
-    public function actionView($id)
-    {
+    public function actionView($id) {
         if ($id) {
             $newsItem = Blog::getNewsItemById($id);
             require_once(ROOT . '/views/blog/view.php');

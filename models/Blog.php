@@ -7,8 +7,7 @@ class Blog
      * Returns single blog item with specified id
      * @param integer $id
      */
-    public static function getBlogItemById($id)
-    {
+    public static function getBlogItemById($id) {
         $id = intval($id);
 
         if ($id) {
@@ -33,10 +32,7 @@ class Blog
         
         $blogList = array();
         
-        $result = $db->query('SELECT id, title, date, short_content '
-                . 'FROM blog '
-                . 'ORDER BY date DESC '
-                . 'LIMIT 3');        
+        $result = $db->query('SELECT id, title, date, short_content FROM blog ORDER BY date DESC LIMIT 3');        
 
         $i = 0;
         while($row = $result->fetch()) {

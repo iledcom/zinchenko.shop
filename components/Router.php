@@ -1,12 +1,10 @@
 <?php
 
-class Router
-{
+class Router {
 
     private $routes;
 
-    public function __construct()
-    {
+    public function __construct() {
         $routesPath = ROOT . '/config/routes.php';
         $this->routes = include($routesPath);
     }
@@ -14,15 +12,13 @@ class Router
     /**
      * Returns request string
      */
-    private function getURI()
-    {
+    private function getURI() {
         if (!empty($_SERVER['REQUEST_URI'])) {
             return trim($_SERVER['REQUEST_URI'], '/');
         }
     }
 
-    public function run()
-    {
+    public function run() {
         // Получить строку запроса
         $uri = $this->getURI();
 

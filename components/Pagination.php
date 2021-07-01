@@ -4,8 +4,7 @@
  * Класс для генерации постраничной навигации
  */
 
-class Pagination
-{
+class Pagination {
 
     /**
      * 
@@ -49,8 +48,7 @@ class Pagination
      * 
      * @return
      */
-    public function __construct($total, $currentPage, $limit, $index)
-    {
+    public function __construct($total, $currentPage, $limit, $index) {
         # Устанавливаем общее количество записей
         $this->total = $total;
 
@@ -72,8 +70,7 @@ class Pagination
      * 
      * @return HTML-код со ссылками навигации
      */
-    public function get()
-    {
+    public function get() {
         # Для записи ссылок
         $links = null;
 
@@ -117,8 +114,7 @@ class Pagination
      * 
      * @return
      */
-    private function generateHtml($page, $text = null)
-    {
+    private function generateHtml($page, $text = null) {
         # Если текст ссылки не указан
         if (!$text)
         # Указываем, что текст - цифра страницы
@@ -136,8 +132,7 @@ class Pagination
      * 
      * @return массив с началом и концом отсчёта
      */
-    private function limits()
-    {
+    private function limits() {
         # Вычисляем ссылки слева (чтобы активная ссылка была посередине)
         $left = $this->current_page - round($this->max / 2);
 
@@ -166,8 +161,7 @@ class Pagination
      * 
      * @return
      */
-    private function setCurrentPage($currentPage)
-    {
+    private function setCurrentPage($currentPage) {
         # Получаем номер страницы
         $this->current_page = $currentPage;
 
@@ -187,8 +181,7 @@ class Pagination
      * 
      * @return число страниц
      */
-    private function amount()
-    {
+    private function amount() {
         # Делим и возвращаем
         return round($this->total / $this->limit);
     }
