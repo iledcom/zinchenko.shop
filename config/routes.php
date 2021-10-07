@@ -40,6 +40,10 @@ return array(
     // О магазине
     'contacts' => 'site/contact',
     'about' => 'site/about',
+    // Новости
+    'news' => 'news/index',
+    // Новости
+    'parser' => 'parser/index',
     // Главная страница
     'index.php' => 'site/index', // actionIndex в SiteController
     '' => 'site/index', // actionIndex в SiteController
