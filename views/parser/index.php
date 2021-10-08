@@ -32,17 +32,63 @@ $posts = [];
         'status' => 1
       ];
 
-      //News::addNews($posts);
+      //$posts[] = $post;
+      //News::addNews($posts);       
     }
 
-  usleep(1000000);
+    usleep(1000000);
 
-    if($i > 1) {
+    if($i > 0) {
       break;
     }
   }
 
-  print_r($posts);
 
- 
+
+  //print_r($posts);
+
+ $db = Db::getConnection();
+
+      // Текст запроса к БД
+      $sql = 'INSERT INTO news (title, short_content, img, link, writing_date, status)'
+              . 'VALUES (:title, :short_content, :img, :link, :writing_date, :status)';
+
+      // Получение и возврат результатов. Используется подготовленный запрос
+      $result = $db->prepare($sql);
+      
+      /*
+      $result->bindParam(':title', $posts['title'], PDO::PARAM_STR);
+      $result->bindParam(':short_content', $posts['short_content'], PDO::PARAM_STR);
+      $result->bindParam(':img', $posts['img'], PDO::PARAM_STR);
+      $result->bindParam(':link', $posts['link'], PDO::PARAM_STR);
+      //$result->bindParam(':content', $posts['content'], PDO::PARAM_STR);
+      $result->bindParam(':writing_date', $posts['writing_date'], PDO::PARAM_STR);
+      $result->bindParam(':status', $posts['status'], PDO::PARAM_INT);
+      
+      //print_r($posts);
+      $result->execute();
+      $result->closeCursor();
+      */
+
+    // start transaction
+     $db->beginTransaction(); 
+    
+      for ($i = 0; $i < count($posts); $i++) {
+        foreach ($posts as $post) {
+      
+      $result->bindParam(':title', $post['title'], PDO::PARAM_STR);
+      $result->bindParam(':short_content', $post['short_content'], PDO::PARAM_STR);
+      $result->bindParam(':img', $post['img'], PDO::PARAM_STR);
+      $result->bindParam(':link', $post['link'], PDO::PARAM_STR);
+      //$result->bindParam(':content', $post['content'], PDO::PARAM_STR);
+      $result->bindParam(':writing_date', $post['writing_date'], PDO::PARAM_STR);
+      $result->bindParam(':status', $post['status'], PDO::PARAM_INT);
+      
+        //print_r($post);
+        $result->execute();
+        //$result->closeCursor();
+        }
+    }
+    // end transaction
+    $db->commit();
  

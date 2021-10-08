@@ -51,24 +51,36 @@ class News {
         $db = Db::getConnection();
 
         // Текст запроса к БД
-        $sql = 'INSERT INTO news (title, short_content, writing_date, status)'
-                . 'VALUES (:title, :short_content, :writing_date, :status)';
+         $sql = 'INSERT INTO news (title, short_content, img, link, writing_date, status)'
+                . 'VALUES (:title, :short_content, :img, :link, :writing_date, :status)';
 
         // Получение и возврат результатов. Используется подготовленный запрос
         $result = $db->prepare($sql);
+        /*
         $result->bindParam(':title', $options['title'], PDO::PARAM_STR);
         $result->bindParam(':short_content', $options['short_content'], PDO::PARAM_STR);
+        $result->bindParam(':img', $options['img'], PDO::PARAM_STR);
+        $result->bindParam(':link', $options['link'], PDO::PARAM_STR);
         //$result->bindParam(':content', $options['content'], PDO::PARAM_STR);
         $result->bindParam(':writing_date', $options['writing_date'], PDO::PARAM_STR);
         $result->bindParam(':status', $options['status'], PDO::PARAM_INT);
+        */
 
-//        print_r($options);
-//        die();
-        if ($result->execute()) {
-            // Если запрос выполенен успешно, возвращаем id добавленной записи
-            return $db->lastInsertId();
+        //print_r($options);
+
+        //$result->execute();
+       // $result->closeCursor();
+
+        // start transaction
+        $db->beginTransaction();
+
+        foreach($options as $row) {
+            $result->execute($row);
+            $result->closeCursor();
+            print_r($row);
         }
-        // Иначе возвращаем 0
-        return 0;
+
+        // end transaction
+        $db->commit();
     }
 }
