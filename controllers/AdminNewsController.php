@@ -13,7 +13,7 @@ class AdminNewsController extends AdminBase {
       self::checkAdmin();
 
       // Получаем список новостей
-      $newsList = News::getNewsListAdmin();
+      $newsList = News::getNewsList();
 
       // Подключаем вид
       require_once(ROOT . '/views/admin_news/index.php');
@@ -24,84 +24,105 @@ class AdminNewsController extends AdminBase {
    * Action для страницы "Добавить новость"
    */
   public function actionCreate() {
-      // Проверка доступа
-      self::checkAdmin();
+    // Проверка доступа
+    self::checkAdmin();
+    
+    // Получаем список категорий для выпадающего списка
+    $newsCategoriesList = News::getCategoriesListAdmin();
 
-      // Обработка формы
-      if (isset($_POST['save'])) {
-          // Если форма отправлена
-          // Получаем данные из формы
-          $options['id'] = $_POST['title'];
-          $options['title'] = $_POST['title'];
-          $options['short_content'] = $_POST['title'];
-          $options['content'] = $_POST['title'];
-          $options['writing_date'] = $_POST['title'];
-          $options['status'] = $_POST['title'];
+    // Обработка формы
+    if (isset($_POST['submit'])) {
+      // Если форма отправлена
+      // Получаем данные из формы
+      $options['title'] = $_POST['title'];
+      $options['short_content'] = $_POST['short_content'];
+      $options['content'] = $_POST['content'];
+      $options['category_id'] = $_POST['category_id'];
+      $options['writing_date'] = date('Y-m-d');
+      $options['is_new'] = $_POST['is_new'];
+      $options['is_recommended'] = $_POST['is_recommended'];
+      $options['status'] = $_POST['status'];
 
-          // Флаг ошибок в форме
-          $errors = false;
+      // Флаг ошибок в форме
+      $errors = false;
 
-          // При необходимости можно валидировать значения нужным образом
-          if (!isset($options['title']) || empty($options['title'])) {
-              $errors[] = 'Заполните поля';
-          }
-
-
-          if ($errors == false) {
-              // Если ошибок нет
-              // Добавляем новую категорию
-              $id = News::createNews($options);
-
-                // Если запись добавлена
-                if ($id) {
-                    // Проверим, загружалось ли через форму изображение
-                    if (is_uploaded_file($_FILES["image"]["tmp_name"])) {
-                        // Если загружалось, переместим его в нужную папке, дадим новое имя
-                        move_uploaded_file($_FILES["image"]["tmp_name"], $_SERVER['DOCUMENT_ROOT'] . "/upload/images/news/{$id}.jpg");
-                    }
-                };
-
-                // Перенаправляем пользователя на страницу управлениями товарами
-                header("Location: /admin/product");
-          }
+      // При необходимости можно валидировать значения нужным образом
+      if (!isset($options['title']) || empty($options['title'])) {
+          $errors[] = 'Заполните поля';
       }
 
-      require_once(ROOT . '/views/admin_category/create.php');
+      if ($errors == false) {
+        // Если ошибок нет
+        // Добавляем новую новость
+        $id = News::createNews($options);
+
+          // Если запись добавлена
+          if ($id) {
+            // Проверим, загружалось ли через форму изображение
+            if (is_uploaded_file($_FILES["image"]["tmp_name"])) {
+                // Если загружалось, переместим его в нужную папке, дадим новое имя
+                move_uploaded_file($_FILES["image"]["tmp_name"], $_SERVER['DOCUMENT_ROOT'] . "/upload/images/news/{$id}.jpg");
+            }
+          };
+
+          // Перенаправляем пользователя на страницу управлениями товарами
+          header("Location: /admin/news");
+      }
+    }
+
+      require_once(ROOT . '/views/admin_news/create.php');
       return true;
   }
 
   /**
-   * Action для страницы "Редактировать категорию"
+   * Action для страницы "Редактировать новость"
    */
   public function actionUpdate($id) {
       // Проверка доступа
       self::checkAdmin();
 
-      // Получаем данные о конкретной категории
-      $category = Category::getCategoryById($id);
+      $newsCategoriesList = News::getCategoriesListAdmin();
 
-      // Обработка формы
+      // Получаем данные о конкретной новости
+      $news = News::getNewsById($id);
+
+     // Обработка формы
       if (isset($_POST['submit'])) {
-          // Если форма отправлена   
-          // Получаем данные из формы
-          $name = $_POST['name'];
-          $sortOrder = $_POST['sort_order'];
-          $status = $_POST['status'];
+        // Если форма отправлена
+        // Получаем данные из формы редактирования. При необходимости можно валидировать значения
+        $options['title'] = $_POST['title'];
+        $options['short_content'] = $_POST['short_content'];
+        $options['content'] = $_POST['content'];
+        $options['category_id'] = $_POST['category_id'];
+        $options['writing_date'] = $_POST['writing_date'];
+        $options['is_new'] = $_POST['is_new'];
+        $options['is_recommended'] = $_POST['is_recommended'];
+        $options['status'] = $_POST['status'];
 
-          // Сохраняем изменения
-          Category::updateCategoryById($id, $name, $sortOrder, $status);
+        // Сохраняем изменения
+        if (News::updateNewsById($id, $options)) {
 
-          // Перенаправляем пользователя на страницу управлениями категориями
-          header("Location: /admin/category");
+
+            // Если запись сохранена
+            // Проверим, загружалось ли через форму изображение
+            if (is_uploaded_file($_FILES["image"]["tmp_name"])) {
+
+                // Если загружалось, переместим его в нужную папке, дадим новое имя
+               move_uploaded_file($_FILES["image"]["tmp_name"], $_SERVER['DOCUMENT_ROOT'] . "/upload/images/news/{$id}.jpg");
+            }
+        }
+
+        // Перенаправляем пользователя на страницу управлениями новостями
+        header("Location: /admin/news");
       }
 
       // Подключаем вид
-      require_once(ROOT . '/views/admin_category/update.php');
+      require_once(ROOT . '/views/admin_news/update.php');
       return true;
   }
 
   /**
-   * Action для страницы "Удалить категорию"
+   * Action для страницы "Удалить новость"
    */
   public function actionDelete($id) {
       // Проверка доступа
@@ -110,15 +131,15 @@ class AdminNewsController extends AdminBase {
       // Обработка формы
       if (isset($_POST['submit'])) {
           // Если форма отправлена
-          // Удаляем категорию
-          Category::deleteCategoryById($id);
+          // Удаляем новость
+          News::deleteNewsById($id);
 
-          // Перенаправляем пользователя на страницу управлениями товарами
-          header("Location: /admin/category");
+          // Перенаправляем пользователя на страницу управлениями новостями
+          header("Location: /admin/news");
       }
 
       // Подключаем вид
-      require_once(ROOT . '/views/admin_category/delete.php');
+      require_once(ROOT . '/views/admin_news/delete.php');
       return true;
   }
 

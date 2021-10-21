@@ -13,7 +13,7 @@
                 </ol>
             </div>
 
-            <a href="/admin/product/create" class="btn btn-default back"><i class="fa fa-plus"></i> Добавить товар</a>
+            <a href="/admin/news/create" class="btn btn-default back"><i class="fa fa-plus"></i> Добавить новость</a>
             
             <h4>Список новостей</h4>
 
@@ -23,17 +23,17 @@
                 <tr>
                     <th>ID новости</th>
                     <th>Заголовок</th>
-                    <th>Статус</th>
+                    <th>Дата написания</th>
                     <th></th>
                     <th></th>
                 </tr>
-                <?php foreach ($productsList as $product): ?>
+                <?php foreach ($newsList as $news): ?>
                     <tr>
-                        <td><?php echo $product['id']; ?></td>
-                        <td><?php echo $product['name']; ?></td>
-                        <td><?php echo $product['price']; ?></td>  
-                        <td><a href="/admin/product/update/<?php echo $product['id']; ?>" title="Редактировать"><i class="fa fa-pencil-square-o"></i></a></td>
-                        <td><a href="/admin/product/delete/<?php echo $product['id']; ?>" title="Удалить"><i class="fa fa-times"></i></a></td>
+                        <td><?php echo $news['id']; ?></td>
+                        <td><?php echo $news['title']; ?></td>
+                        <td><?php echo $news['writing_date']; ?></td>  
+                        <td><a href="/admin/news/update/<?php echo $news['id']; ?>" title="Редактировать"><i class="fa fa-pencil-square-o"></i></a></td>
+                        <td><a href="/admin/news/delete/<?php echo $news['id']; ?>" title="Удалить"><i class="fa fa-times"></i></a></td>
                     </tr>
                 <?php endforeach; ?>
             </table>
