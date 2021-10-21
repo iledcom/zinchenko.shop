@@ -41,7 +41,9 @@ return array(
     'contacts' => 'site/contact',
     'about' => 'site/about',
     // Новости
+    'news/add/' => 'news/create',
     'news' => 'news/index',
+
     // Новости
     'parser' => 'parser/index',
     // Главная страница

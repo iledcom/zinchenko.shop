@@ -46,17 +46,28 @@ class News {
         return $newsList;
     }
 
-    public static function addNews($options) {
+    public static function createNews($options) {
+        
+    }
+
+
+
+    public static function addNews($arrayOptions) {
         // Соединение с БД
         $db = Db::getConnection();
+        for ($i = 0; $i < count($arrayOptions); $i++) {
+            $options = $arrayOptions[$i];
+            self::newsExecute($db, $options);
+        }
+    }
 
-        // Текст запроса к БД
+    public static function newsExecute($db, $options) {
+        
          $sql = 'INSERT INTO news (title, short_content, img, link, writing_date, status)'
-                . 'VALUES (:title, :short_content, :img, :link, :writing_date, :status)';
+        . 'VALUES (:title, :short_content, :img, :link, :writing_date, :status)';
 
-        // Получение и возврат результатов. Используется подготовленный запрос
         $result = $db->prepare($sql);
-        /*
+
         $result->bindParam(':title', $options['title'], PDO::PARAM_STR);
         $result->bindParam(':short_content', $options['short_content'], PDO::PARAM_STR);
         $result->bindParam(':img', $options['img'], PDO::PARAM_STR);
@@ -64,23 +75,26 @@ class News {
         //$result->bindParam(':content', $options['content'], PDO::PARAM_STR);
         $result->bindParam(':writing_date', $options['writing_date'], PDO::PARAM_STR);
         $result->bindParam(':status', $options['status'], PDO::PARAM_INT);
+        
+        /*
+        $sql = 'INSERT INTO news (title, short_content, img, link, writing_date, status)'
+                . 'VALUES (?, ?, ?, ?, ?, ?)';
+        
+        $result = $db->prepare($sql);
+
+        $result->bindParam(1, $options['title']);
+        $result->bindParam(2, $options['short_content']);
+        $result->bindParam(3, $options['img']);
+        $result->bindParam(4, $options['link']);
+        $result->bindParam(5, $options['writing_date']);
+        $result->bindParam(6, $options['status']);
+
         */
-
-        //print_r($options);
-
-        //$result->execute();
-       // $result->closeCursor();
-
-        // start transaction
-        $db->beginTransaction();
-
-        foreach($options as $row) {
-            $result->execute($row);
-            $result->closeCursor();
-            print_r($row);
+        $result->execute();
+        $error = $result->errorInfo();
+        if($error[1]) {
+          print_r($error);  
         }
 
-        // end transaction
-        $db->commit();
     }
 }
