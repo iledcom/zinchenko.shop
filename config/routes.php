@@ -35,13 +35,20 @@ return array(
     'admin/order/delete/([0-9]+)' => 'adminOrder/delete/$1',
     'admin/order/view/([0-9]+)' => 'adminOrder/view/$1',
     'admin/order' => 'adminOrder/index',
+    // Управление новостями:
+    'admin/news/create' => 'adminNews/create',   
+    'admin/news/update/([0-9]+)' => 'adminNews/update/$1',
+    'admin/news/delete/([0-9]+)' => 'adminNews/delete/$1',
+    'admin/news' => 'adminNews/index',
     // Админпанель:
     'admin' => 'admin/index',
     // О магазине
     'contacts' => 'site/contact',
     'about' => 'site/about',
     // Новости
+    'news/add/' => 'news/create',
     'news' => 'news/index',
+
     // Новости
     'parser' => 'parser/index',
     // Главная страница
