@@ -46,11 +46,10 @@ return array(
     'contacts' => 'site/contact',
     'about' => 'site/about',
     // Новости
-    'news/add/' => 'news/create',
     'news' => 'news/index',
 
     // Новости
-    'parser' => 'parser/index',
+    'parser' => 'parserNews/index',
     // Главная страница
     'index.php' => 'site/index', // actionIndex в SiteController
     '' => 'site/index', // actionIndex в SiteController

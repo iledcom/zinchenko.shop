@@ -6,7 +6,7 @@
  */
 class AdminNewsController extends AdminBase {
   /**
-   * Action для страницы "Управление категориями"
+   * Action для страницы "Управление новостями"
    */
   public function actionIndex() {
       // Проверка доступа
@@ -28,7 +28,7 @@ class AdminNewsController extends AdminBase {
     self::checkAdmin();
     
     // Получаем список категорий для выпадающего списка
-    $newsCategoriesList = News::getCategoriesListAdmin();
+    $newsCategoriesList = News::getCategoriesList();
 
     // Обработка формы
     if (isset($_POST['submit'])) {
@@ -81,7 +81,7 @@ class AdminNewsController extends AdminBase {
       // Проверка доступа
       self::checkAdmin();
 
-      $newsCategoriesList = News::getCategoriesListAdmin();
+      $newsCategoriesList = News::getCategoriesList();
 
       // Получаем данные о конкретной новости
       $news = News::getNewsById($id);

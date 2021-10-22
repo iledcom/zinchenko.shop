@@ -12,7 +12,7 @@ class News {
         // Соединение с БД
         $db = Db::getConnection();
 
-        $sql = 'SELECT id, title, writing_date  FROM news ORDER BY writing_date DESC LIMIT :count';
+        $sql = 'SELECT id, title, short_content, writing_date  FROM news ORDER BY writing_date DESC LIMIT :count';
         
         // Используется подготовленный запрос
         $result = $db->prepare($sql);
@@ -30,6 +30,7 @@ class News {
         while($row = $result->fetch()) {
             $newsList[$i]['id'] = $row['id'];
             $newsList[$i]['title'] = $row['title'];
+            $newsList[$i]['short_content'] = $row['short_content'];
             $newsList[$i]['writing_date'] = $row['writing_date'];
             $i++;
         }
@@ -103,7 +104,7 @@ class News {
      * (при этом в результат попадают и включенные и выключенные категории)
      * @return array <p>Массив категорий</p>
      */
-    public static function getCategoriesListAdmin() {
+    public static function getCategoriesList() {
         // Соединение с БД
         $db = Db::getConnection();
 
@@ -254,8 +255,8 @@ class News {
     }
 
     public static function newsExecute($db, $options) {
-         $sql = 'INSERT INTO news (title, short_content, img, link, writing_date, status)'
-        . 'VALUES (:title, :short_content, :img, :link, :writing_date, :status)';
+         $sql = 'INSERT INTO news (title, short_content, img, link, writing_date, category_id, is_new, is_recommended, status)'
+        . 'VALUES (:title, :short_content, :img, :link, :writing_date, :category_id, :is_new, :is_recommended, :status)';
 
         $result = $db->prepare($sql);
 
@@ -264,6 +265,9 @@ class News {
         $result->bindParam(':img', $options['img'], PDO::PARAM_STR);
         $result->bindParam(':link', $options['link'], PDO::PARAM_STR);
         $result->bindParam(':writing_date', $options['writing_date'], PDO::PARAM_STR);
+        $result->bindParam(':category_id', $options['category_id'], PDO::PARAM_INT);
+        $result->bindParam(':is_new', $options['is_new'], PDO::PARAM_INT);
+        $result->bindParam(':is_recommended', $options['is_recommended'], PDO::PARAM_INT);
         $result->bindParam(':status', $options['status'], PDO::PARAM_INT);
         
         $result->execute();
