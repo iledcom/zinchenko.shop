@@ -2,31 +2,7 @@
 
 class News {
     const SHOW_BY_DEFAULT = 10;
-    /**
-     * Возвращает список новостей с указанными индентификторами
-     * @param array $idsArray <p>Массив с идентификаторами</p>
-     * @return array <p>Массив со списком новостей</p>
-     */
-    public static function getNewsById($id) {
-        // Соединение с БД
-        $db = Db::getConnection();
-
-        // Текст запроса к БД
-        $sql = 'SELECT * FROM news WHERE id = :id';
-
-        // Используется подготовленный запрос
-        $result = $db->prepare($sql);
-        $result->bindParam(':id', $id, PDO::PARAM_INT);
-
-        // Указываем, что хотим получить данные в виде массива
-        $result->setFetchMode(PDO::FETCH_ASSOC);
-
-        // Выполняем запрос
-        $result->execute();
-
-        // Возвращаем данные
-        return $result->fetch();     
-    }
+    const SHOW_LATEST_DEFAULT = 3;
 
     /**
      * Returns an array of news List
@@ -59,6 +35,67 @@ class News {
         }
 
         return $newsList;
+    }
+
+     /**
+     * Возвращает массив последних новостей
+     * @param type $count [optional] <p>Количество</p>
+     * @param type $page [optional] <p>Номер текущей страницы</p>
+     * @return array <p>Массив с новостями</p>
+     */
+    public static function getLatestNews($count = self::SHOW_LATEST_DEFAULT) {
+        // Соединение с БД
+        $db = Db::getConnection();
+
+        // Текст запроса к БД
+        $sql = 'SELECT title, short_content, writing_date FROM news WHERE status = "1" ORDER BY id DESC LIMIT :count';
+
+        // Используется подготовленный запрос
+        $result = $db->prepare($sql);
+        $result->bindParam(':count', $count, PDO::PARAM_INT);
+
+        // Указываем, что хотим получить данные в виде массива
+        $result->setFetchMode(PDO::FETCH_ASSOC);
+        
+        // Выполнение коменды
+        $result->execute();
+
+        // Получение и возврат результатов
+        $i = 0;
+        $latestNewsList = array();
+        while ($row = $result->fetch()) {
+            $latestNewsList[$i]['title'] = $row['title'];
+            $latestNewsList[$i]['short_content'] = $row['short_content'];
+            $latestNewsList[$i]['writing_date'] = $row['writing_date'];
+            $i++;
+        }
+        return $latestNewsList;
+    }
+
+    /**
+     * Возвращает список новостей с указанными индентификторами
+     * @param array $idsArray <p>Массив с идентификаторами</p>
+     * @return array <p>Массив со списком новостей</p>
+     */
+    public static function getNewsById($id) {
+        // Соединение с БД
+        $db = Db::getConnection();
+
+        // Текст запроса к БД
+        $sql = 'SELECT * FROM news WHERE id = :id';
+
+        // Используется подготовленный запрос
+        $result = $db->prepare($sql);
+        $result->bindParam(':id', $id, PDO::PARAM_INT);
+
+        // Указываем, что хотим получить данные в виде массива
+        $result->setFetchMode(PDO::FETCH_ASSOC);
+
+        // Выполняем запрос
+        $result->execute();
+
+        // Возвращаем данные
+        return $result->fetch();     
     }
 
     /**
@@ -116,7 +153,7 @@ class News {
         }
         $error = $result->errorInfo();
         if($error[1]) {
-          print_r($error);  
+          print_r($error);
         }
         // Иначе возвращаем 0
         return 0;

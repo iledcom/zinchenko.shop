@@ -11,6 +11,13 @@
                 <li><a href="/cabinet/edit">Редактировать данные</a></li>
                 <!--<li><a href="/cabinet/history">Список покупок</a></li>-->
             </ul>
+            <?php
+            // Если роль текущего пользователя "admin", пускаем его в админпанель
+            if ($user['role'] == 'admin') { ?>
+                <ul>
+                    <li><a href="/admin">Панель администратора</a></li>
+                </ul>
+            <?php } ?>
             
         </div>
     </div>

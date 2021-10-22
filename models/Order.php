@@ -133,7 +133,7 @@ class Order {
      * @param integer $status <p>Статус <i>(включено "1", выключено "0")</i></p>
      * @return boolean <p>Результат выполнения метода</p>
      */
-    public static function updateOrderById($id, $userName, $userPhone, $userComment, $date, $status) {
+    public static function updateOrderById($id, $userName, $userPhone, $userComment, $date, $status)    {
         // Соединение с БД
         $db = Db::getConnection();
 
